@@ -11,9 +11,8 @@ const MainLayouts = () => {
                 <Navbar />
             </nav>
 
-            <section>
+            <section className='min-h-[calc(100vh-240px)]'>
                 <Outlet />
-                <App/>
             </section>
 
             <footer>
