@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import ProductCard from '../../components/ProductCard';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/react/24/solid';
@@ -8,7 +8,7 @@ import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 
 const fetchProducts = async ({ page = 1, limit = 12, search = '', sortBy = '', filters = {} }) => {
-    const res = await fetch(`http://localhost:3000/products?page=${page}&limit=${limit}&search=${search}&sortBy=${sortBy}&category=${filters.category || ''}&brand=${filters.brand || ''}`);
+    const res = await fetch(`http://localhost:3000/products?page=${page}&limit=${limit}&search=${search}&sortBy=${sortBy}&category=${filters.category || ''}&brand=${filters.brand || ''}&minPrice=${filters.minPrice || 0}&maxPrice=${filters.maxPrice || 10000}`);
     if (!res.ok) {
         throw new Error('Network response was not ok');
     }
@@ -37,7 +37,7 @@ const ProductSection = () => {
     const [search, setSearch] = useState('');
     const [inputValue, setInputValue] = useState('');
     const [sortBy, setSortBy] = useState('');
-    const [filters, setFilters] = useState({ category: '', brand: '' });
+    const [filters, setFilters] = useState({ category: '', brand: '', minPrice: 0, maxPrice: 10000 });
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [selectedBrands, setSelectedBrands] = useState([]);
 
@@ -90,7 +90,6 @@ const ProductSection = () => {
         setSelectedCategories(prev =>
             checked ? [...prev, value] : prev.filter(category => category !== value)
         );
-        setFilters(prev => ({ ...prev, category: selectedCategories.join(',') }));
     };
 
     const handleBrandChange = (e) => {
@@ -98,7 +97,25 @@ const ProductSection = () => {
         setSelectedBrands(prev =>
             checked ? [...prev, value] : prev.filter(brand => brand !== value)
         );
-        setFilters(prev => ({ ...prev, brand: selectedBrands.join(',') }));
+    };
+
+    const handleFilterClick = () => {
+        setFilters({
+            ...filters,
+            category: selectedCategories.join(','),
+            brand: selectedBrands.join(','),
+            minPrice: filters.minPrice,
+            maxPrice: filters.maxPrice,
+        });
+        setActive(1);
+    };
+
+    const handlePriceChange = (value) => {
+        setFilters(prev => ({
+            ...prev,
+            minPrice: value[0],
+            maxPrice: value[1]
+        }));
     };
 
     const next = () => {
@@ -120,7 +137,6 @@ const ProductSection = () => {
         <div id='productSection' className='w-11/12 mx-auto'>
             <h2 className='text-3xl font-bold text-center mb-7 text-outlet-secondary font-poppins'>Our Products</h2>
             <section className='shadow-md rounded-xl px-2 border py-4 my-10'>
-
                 <div className='flex justify-between gap-3 flex-col md:flex-row items-center'>
                     {/* Search */}
                     <div className="relative flex min-w-full md:min-w-min md:flex-1 gap-2 md:w-max">
@@ -159,36 +175,65 @@ const ProductSection = () => {
 
                 {/* Filtering */}
                 <div className='mt-3 flex justify-end'>
-                    <Button variant='outlined' className='bg-white text-outlet-secondary w-full' onClick={toggleOpen}>Select Filters</Button>
+                    <Button variant='outlined' className='bg-white text-outlet-secondary w-full' onClick={toggleOpen}>Product Filters</Button>
                 </div>
                 <Collapse open={open}>
                     <Card className="my-4 mx-auto w-11/12">
                         <CardBody>
                             <div>
-                                <h2>Category:</h2>
-                                {categoryData?.categories.map((category) => (
-                                    <Checkbox
-                                        key={category}
-                                        label={category}
-                                        value={category}
-                                        onChange={handleCategoryChange}
-                                    />
-                                ))}
+                                <h2 className='font-inter text-outlet-secondary uppercase border border-outlet-primary w-fit px-3 rounded-t-md py-2 border-b-0'>Category:</h2>
+                                <div className='grid border-outlet-primary rounded-md rounded-tl-none grid-cols-2 text-xs md:text-sm md:grid-cols-3 border'>
+                                    {categoryData?.categories.map((category) => (
+                                        <Checkbox
+                                            key={category}
+                                            label={category}
+                                            value={category}
+                                            onChange={handleCategoryChange}
+                                        />
+                                    ))}
+                                </div>
                             </div>
-                            <div>
-                                <h2>Brand Name:</h2>
-                                {brandData?.brands.map((brand) => (
-                                    <Checkbox
-                                        key={brand}
-                                        label={brand}
-                                        value={brand}
-                                        onChange={handleBrandChange}
-                                    />
-                                ))}
+                            <div className='mt-3'>
+                                <h2 className='font-inter text-outlet-secondary uppercase border border-outlet-primary w-fit px-3 rounded-t-md py-2 border-b-0'>Brand Name:</h2>
+                                <div className='grid border-outlet-primary rounded-md rounded-tl-none grid-cols-2 text-xs md:text-sm md:grid-cols-3 border'>
+                                    {brandData?.brands.map((brand) => (
+                                        <Checkbox
+                                            key={brand}
+                                            label={brand}
+                                            value={brand}
+                                            onChange={handleBrandChange}
+                                        />
+                                    ))}
+                                </div>
                             </div>
-                            <div>
-                                <h2>Price Range:</h2>
-                                <RangeSlider />
+                            <div className='mt-3'>
+                                <h2 className='font-inter text-outlet-secondary uppercase border border-outlet-primary w-fit px-3 rounded-t-md py-2 border-b-0'>Price Range:</h2>
+                                <div className='border-outlet-primary rounded-md rounded-tl-none border p-10 flex gap-2 items-center flex-col md:flex-row'>
+                                    {/* <RangeSlider
+                                        min={0}
+                                        max={10000}
+                                        step={10}
+                                        value={[filters.minPrice, filters.maxPrice]}
+                                        onChange={handlePriceChange}
+                                        className="w-full"
+                                    /> */}
+                                    <Input
+                                        type='number'
+                                        label='Min Price'
+                                        value={filters.minPrice}
+                                        onChange={(e) => setFilters(prev => ({ ...prev, minPrice: Number(e.target.value) }))}
+                                        className='w-full'
+                                    />
+                                    <p>—</p>
+                                    <Input
+                                        type='number'
+                                        label='Max Price'
+                                        value={filters.maxPrice}
+                                        onChange={(e) => setFilters(prev => ({ ...prev, maxPrice: Number(e.target.value) }))}
+                                        className='w-full'
+                                    />
+                                </div>
+                                <Button className='w-full mt-3 bg-outlet-accent text-outlet-text' onClick={handleFilterClick}>Filter</Button>
                             </div>
                         </CardBody>
                     </Card>
@@ -197,9 +242,13 @@ const ProductSection = () => {
 
             {/* Product Display */}
             <div className='grid gap-2 md:grid-cols-2 lg:grid-cols-3'>
-                {productData?.products.map((product) => (
-                    <ProductCard key={product._id} product={product} />
-                ))}
+                {productData?.products.length > 0 ? (
+                    productData.products.map((product) => (
+                        <ProductCard key={product._id} product={product} />
+                    ))
+                ) : (
+                    <Typography className='text-center col-span-full mt-5'>No products match the selected filters.</Typography>
+                )}
             </div>
 
             {/* Pagination */}
