@@ -7,9 +7,24 @@ import { RiArrowUpDownFill } from 'react-icons/ri';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 
+const fetchProducts = async ({ page = 1, limit = 12, search = '', sortBy = '', filters = {} }) => {
+    const res = await fetch(`http://localhost:3000/products?page=${page}&limit=${limit}&search=${search}&sortBy=${sortBy}&category=${filters.category || ''}&brand=${filters.brand || ''}`);
+    if (!res.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return res.json();
+};
 
-const fetchProducts = async ({ page = 1, limit = 12, search = '', sortBy = '' }) => {
-    const res = await fetch(`http://localhost:3000/products?page=${page}&limit=${limit}&search=${search}&sortBy=${sortBy}`);
+const fetchCategories = async () => {
+    const res = await fetch('http://localhost:3000/categories');
+    if (!res.ok) {
+        throw new Error('Network response was not ok');
+    }
+    return res.json();
+};
+
+const fetchBrands = async () => {
+    const res = await fetch('http://localhost:3000/brands');
     if (!res.ok) {
         throw new Error('Network response was not ok');
     }
@@ -22,26 +37,38 @@ const ProductSection = () => {
     const [search, setSearch] = useState('');
     const [inputValue, setInputValue] = useState('');
     const [sortBy, setSortBy] = useState('');
-
+    const [filters, setFilters] = useState({ category: '', brand: '' });
+    const [selectedCategories, setSelectedCategories] = useState([]);
+    const [selectedBrands, setSelectedBrands] = useState([]);
 
     const toggleOpen = () => setOpen((cur) => !cur);
 
-    //----Get Data with tacstack query
-    const { data, error, isLoading } = useQuery({
-        queryKey: ['products', active, search, sortBy],
-        queryFn: () => fetchProducts({ page: active, limit: 12, search, sortBy }),
+    const { data: productData, error: productError, isLoading: productLoading } = useQuery({
+        queryKey: ['products', active, search, sortBy, filters],
+        queryFn: () => fetchProducts({ page: active, limit: 12, search, sortBy, filters }),
         keepPreviousData: true,
     });
 
-    //----Search funtionality
+    const { data: categoryData, isLoading: categoryLoading } = useQuery({
+        queryKey: ['categories'],
+        queryFn: fetchCategories
+    });
+
+    const { data: brandData, isLoading: brandLoading } = useQuery({
+        queryKey: ['brands'],
+        queryFn: fetchBrands
+    });
+
     const handleSearchChange = (e) => {
         setInputValue(e.target.value);
     };
+
     const handleSearchClick = (e) => {
         e.preventDefault();
         setSearch(inputValue);
         setActive(1);
     };
+
     const handleKeyUp = (e) => {
         if (e.key === 'Enter') {
             e.preventDefault();
@@ -50,30 +77,44 @@ const ProductSection = () => {
         }
     };
 
-    //----Pagination Functionality
-    const next = () => {
-        if (active < data?.totalPages) {
-            setActive((prev) => prev + 1);
-        }
-    };
-    const prev = () => {
-        if (active > 1) {
-            setActive((prev) => Math.max(prev - 1, 1));
-        }
-    };
-
-    //----Sorting functionality
     const handleSortByPrice = () => {
         setSortBy(sortBy === 'priceAsc' ? 'priceDesc' : 'priceAsc');
     };
+
     const handleSortByDate = () => {
         setSortBy(sortBy === 'dateAsc' ? 'dateDesc' : 'dateAsc');
     };
 
-    //---Data State management
-    if (isLoading) return <div>Loading...</div>;
-    if (error) return <div>Error: {error.message}</div>;
+    const handleCategoryChange = (e) => {
+        const { value, checked } = e.target;
+        setSelectedCategories(prev =>
+            checked ? [...prev, value] : prev.filter(category => category !== value)
+        );
+        setFilters(prev => ({ ...prev, category: selectedCategories.join(',') }));
+    };
 
+    const handleBrandChange = (e) => {
+        const { value, checked } = e.target;
+        setSelectedBrands(prev =>
+            checked ? [...prev, value] : prev.filter(brand => brand !== value)
+        );
+        setFilters(prev => ({ ...prev, brand: selectedBrands.join(',') }));
+    };
+
+    const next = () => {
+        if (active < productData?.totalPages) {
+            setActive(prev => prev + 1);
+        }
+    };
+
+    const prev = () => {
+        if (active > 1) {
+            setActive(prev => Math.max(prev - 1, 1));
+        }
+    };
+
+    if (productLoading || categoryLoading || brandLoading) return <div>Loading...</div>;
+    if (productError) return <div>Error: {productError.message}</div>;
 
     return (
         <div id='productSection' className='w-11/12 mx-auto'>
@@ -105,7 +146,7 @@ const ProductSection = () => {
                         </Button>
                     </div>
 
-                    {/* Shorting */}
+                    {/* Sorting */}
                     <div className='flex justify-end gap-2'>
                         <Button variant='outlined' className='flex items-center gap-1 text-outlet-secondary' onClick={handleSortByPrice}>
                             Price {sortBy === 'priceAsc' ? 'High to Low' : 'Low to High'} <RiArrowUpDownFill />
@@ -118,28 +159,32 @@ const ProductSection = () => {
 
                 {/* Filtering */}
                 <div className='mt-3 flex justify-end'>
-                    <Button variant='outlined' className='bg-white text-outlet-secondary w-full' onClick={toggleOpen}>Select Category</Button>
+                    <Button variant='outlined' className='bg-white text-outlet-secondary w-full' onClick={toggleOpen}>Select Filters</Button>
                 </div>
                 <Collapse open={open}>
                     <Card className="my-4 mx-auto w-11/12">
                         <CardBody>
                             <div>
                                 <h2>Category:</h2>
-                                <Checkbox label="Category 1" />
-                                <Checkbox label="Category 2" />
-                                <Checkbox label="Category 3" />
-                                <Checkbox label="Category 4" />
-                                <Checkbox label="Category 5" />
-                                <Checkbox label="Category 6" />
+                                {categoryData?.categories.map((category) => (
+                                    <Checkbox
+                                        key={category}
+                                        label={category}
+                                        value={category}
+                                        onChange={handleCategoryChange}
+                                    />
+                                ))}
                             </div>
                             <div>
                                 <h2>Brand Name:</h2>
-                                <Checkbox label="Category 1" />
-                                <Checkbox label="Category 2" />
-                                <Checkbox label="Category 3" />
-                                <Checkbox label="Category 4" />
-                                <Checkbox label="Category 5" />
-                                <Checkbox label="Category 6" />
+                                {brandData?.brands.map((brand) => (
+                                    <Checkbox
+                                        key={brand}
+                                        label={brand}
+                                        value={brand}
+                                        onChange={handleBrandChange}
+                                    />
+                                ))}
                             </div>
                             <div>
                                 <h2>Price Range:</h2>
@@ -150,16 +195,14 @@ const ProductSection = () => {
                 </Collapse>
             </section>
 
-
-
             {/* Product Display */}
             <div className='grid gap-2 md:grid-cols-2 lg:grid-cols-3'>
-                {data?.products.map((product) => (
+                {productData?.products.map((product) => (
                     <ProductCard key={product._id} product={product} />
                 ))}
             </div>
 
-            {/* Paggination */}
+            {/* Pagination */}
             <div className="flex items-center justify-center my-5 gap-8">
                 <IconButton
                     size="sm"
@@ -171,13 +214,13 @@ const ProductSection = () => {
                 </IconButton>
                 <Typography color="gray" className="font-normal">
                     Page <strong className="text-gray-900">{active}</strong> of{" "}
-                    <strong className="text-gray-900">{data.totalPages}</strong>
+                    <strong className="text-gray-900">{productData.totalPages}</strong>
                 </Typography>
                 <IconButton
                     size="sm"
                     variant="outlined"
                     onClick={next}
-                    disabled={active === data?.totalPages}
+                    disabled={active === productData?.totalPages}
                 >
                     <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                 </IconButton>
