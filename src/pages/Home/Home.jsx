@@ -6,8 +6,12 @@ import ReviewSection from './ReviewSection';
 const Home = () => {
     return (
         <div>
+            <section>
             <HeroSection/>
+            </section>
+            <section className='mt-20'>
             <ProductSection/>
+            </section>
             <ReviewSection/>
         </div>
     );

@@ -25,7 +25,7 @@ const MaterialNavbar = () => {
     }, []);
 
     return (
-        <Navbar shadow={true} fullWidth className="border-0 bg-white/10 fixed z-40 backdrop-blur-sm">
+        <Navbar shadow={true} fullWidth className="border-0 bg-white/90 fixed z-40 backdrop-blur-sm">
 
             <div className="container mx-auto flex items-center justify-between">
             <Link to={'/'} variant="filled" className="px-3 shadow-none hover:shadow-none py-1 bg-transparent">

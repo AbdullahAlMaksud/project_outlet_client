@@ -77,75 +77,80 @@ const ProductSection = () => {
 
     return (
         <div className='w-11/12 mx-auto'>
-            <h2 className='text-3xl font-bold text-center my-5'>Our Products</h2>
+            <h2 className='text-3xl font-bold text-center mb-7 text-outlet-secondary font-poppins'>Our Products</h2>
+            <section className='shadow-md rounded-xl px-2 border py-4 my-10'>
 
-            {/* Search */}
-            <div className="relative flex min-w-full gap-2 md:w-max">
-                <Input
-                    type="search"
-                    color="black"
-                    label="Type here..."
-                    className="pr-20"
-                    containerProps={{
-                        className: "min-w-[300px]",
-                    }}
-                    value={inputValue}
-                    onChange={handleSearchChange}
-                    onKeyUp={handleKeyUp}
-                />
-                <Button
-                    size="sm"
-                    color="white"
-                    className="!absolute right-1 top-1 rounded"
-                    onClick={handleSearchClick}
-                >
-                    Search
-                </Button>
-            </div>
+                <div className='flex justify-between gap-3 flex-col md:flex-row items-center'>
+                    {/* Search */}
+                    <div className="relative flex min-w-full md:min-w-min md:flex-1 gap-2 md:w-max">
+                        <Input
+                            type="search"
+                            color="black"
+                            label="Type here..."
+                            className="pr-20"
+                            containerProps={{
+                                className: "min-w-[300px]",
+                            }}
+                            value={inputValue}
+                            onChange={handleSearchChange}
+                            onKeyUp={handleKeyUp}
+                        />
+                        <Button
+                            size="sm"
+                            color="white"
+                            className="!absolute right-1 top-1 rounded"
+                            onClick={handleSearchClick}
+                        >
+                            Search
+                        </Button>
+                    </div>
+
+                    {/* Shorting */}
+                    <div className='flex justify-end gap-2'>
+                        <Button variant='outlined' className='flex items-center gap-1 text-outlet-secondary' onClick={handleSortByPrice}>
+                            Price {sortBy === 'priceAsc' ? 'High to Low' : 'Low to High'} <RiArrowUpDownFill />
+                        </Button>
+                        <Button variant='outlined' className='flex items-center gap-1 text-outlet-secondary' onClick={handleSortByDate}>
+                            Date {sortBy === 'dateAsc' ? 'Old to New' : 'New to Old'} <RiArrowUpDownFill />
+                        </Button>
+                    </div>
+                </div>
+
+                {/* Filtering */}
+                <div className='mt-3 flex justify-end'>
+                    <Button variant='outlined' className='bg-white text-outlet-secondary w-full' onClick={toggleOpen}>Select Category</Button>
+                </div>
+                <Collapse open={open}>
+                    <Card className="my-4 mx-auto w-11/12">
+                        <CardBody>
+                            <div>
+                                <h2>Category:</h2>
+                                <Checkbox label="Category 1" />
+                                <Checkbox label="Category 2" />
+                                <Checkbox label="Category 3" />
+                                <Checkbox label="Category 4" />
+                                <Checkbox label="Category 5" />
+                                <Checkbox label="Category 6" />
+                            </div>
+                            <div>
+                                <h2>Brand Name:</h2>
+                                <Checkbox label="Category 1" />
+                                <Checkbox label="Category 2" />
+                                <Checkbox label="Category 3" />
+                                <Checkbox label="Category 4" />
+                                <Checkbox label="Category 5" />
+                                <Checkbox label="Category 6" />
+                            </div>
+                            <div>
+                                <h2>Price Range:</h2>
+                                <RangeSlider />
+                            </div>
+                        </CardBody>
+                    </Card>
+                </Collapse>
+            </section>
 
 
-            {/* Filtering */}
-            <div className='mt-3'>
-                <Button className='bg-outlet-secondary' onClick={toggleOpen}>Select Category</Button>
-            </div>
-            <Collapse open={open}>
-                <Card className="my-4 mx-auto w-11/12">
-                    <CardBody>
-                        <div>
-                            <h2>Category:</h2>
-                            <Checkbox label="Category 1" />
-                            <Checkbox label="Category 2" />
-                            <Checkbox label="Category 3" />
-                            <Checkbox label="Category 4" />
-                            <Checkbox label="Category 5" />
-                            <Checkbox label="Category 6" />
-                        </div>
-                        <div>
-                            <h2>Brand Name:</h2>
-                            <Checkbox label="Category 1" />
-                            <Checkbox label="Category 2" />
-                            <Checkbox label="Category 3" />
-                            <Checkbox label="Category 4" />
-                            <Checkbox label="Category 5" />
-                            <Checkbox label="Category 6" />
-                        </div>
-                        <div>
-                            <h2>Price Range:</h2>
-                            <RangeSlider />
-                        </div>
-                    </CardBody>
-                </Card>
-            </Collapse>
-
-            {/* Shorting */}
-            <div className='flex justify-between my-3'>
-                <Button className='flex items-center gap-1 font-normal bg-outlet-secondary' onClick={handleSortByPrice}>
-                    Price {sortBy === 'priceAsc' ? 'High to Low' : 'Low to High'} <RiArrowUpDownFill />
-                </Button>
-                <Button className='flex items-center gap-1 font-normal bg-outlet-secondary' onClick={handleSortByDate}>
-                    Date {sortBy === 'dateAsc' ? 'Old to New' : 'New to Old'} <RiArrowUpDownFill />
-                </Button>
-            </div>
 
             {/* Product Display */}
             <div className='grid gap-2 md:grid-cols-2 lg:grid-cols-3'>

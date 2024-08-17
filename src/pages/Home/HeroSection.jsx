@@ -23,7 +23,7 @@ import { BsArrowUpRight } from 'react-icons/bs';
 const HeroSection = () => {
     return (
         <div>
-            <Swiper className="mySwiper z-0"
+            <Swiper className="mySwiper"
                 autoplay={{
                     delay: 5500,
                     disableOnInteraction: false,
