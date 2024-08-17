@@ -8,8 +8,8 @@ import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 
 
-const fetchProducts = async ({ page = 1, limit = 12, search = '' }) => {
-    const res = await fetch(`http://localhost:3000/products?page=${page}&limit=${limit}&search=${search}`);
+const fetchProducts = async ({ page = 1, limit = 12, search = '', sortBy = '' }) => {
+    const res = await fetch(`http://localhost:3000/products?page=${page}&limit=${limit}&search=${search}&sortBy=${sortBy}`);
     if (!res.ok) {
         throw new Error('Network response was not ok');
     }
@@ -21,14 +21,15 @@ const ProductSection = () => {
     const [active, setActive] = useState(1);
     const [search, setSearch] = useState('');
     const [inputValue, setInputValue] = useState('');
+    const [sortBy, setSortBy] = useState('');
 
 
     const toggleOpen = () => setOpen((cur) => !cur);
 
     //----Get Data with tacstack query
     const { data, error, isLoading } = useQuery({
-        queryKey: ['products', active, search],
-        queryFn: () => fetchProducts({ page: active, limit: 12, search }),
+        queryKey: ['products', active, search, sortBy],
+        queryFn: () => fetchProducts({ page: active, limit: 12, search, sortBy }),
         keepPreviousData: true,
     });
 
@@ -59,6 +60,14 @@ const ProductSection = () => {
         if (active > 1) {
             setActive((prev) => Math.max(prev - 1, 1));
         }
+    };
+
+    //----Sorting functionality
+    const handleSortByPrice = () => {
+        setSortBy(sortBy === 'priceAsc' ? 'priceDesc' : 'priceAsc');
+    };
+    const handleSortByDate = () => {
+        setSortBy(sortBy === 'dateAsc' ? 'dateDesc' : 'dateAsc');
     };
 
     //---Data State management
@@ -130,8 +139,12 @@ const ProductSection = () => {
 
             {/* Shorting */}
             <div className='flex justify-between my-3'>
-                <Button className='flex items-center gap-1 font-normal bg-outlet-secondary'>Price high to Low <RiArrowUpDownFill /></Button>
-                <Button className='flex items-center gap-1 font-normal bg-outlet-secondary'>Date new to old <RiArrowUpDownFill /></Button>
+                <Button className='flex items-center gap-1 font-normal bg-outlet-secondary' onClick={handleSortByPrice}>
+                    Price {sortBy === 'priceAsc' ? 'High to Low' : 'Low to High'} <RiArrowUpDownFill />
+                </Button>
+                <Button className='flex items-center gap-1 font-normal bg-outlet-secondary' onClick={handleSortByDate}>
+                    Date {sortBy === 'dateAsc' ? 'Old to New' : 'New to Old'} <RiArrowUpDownFill />
+                </Button>
             </div>
 
             {/* Product Display */}
