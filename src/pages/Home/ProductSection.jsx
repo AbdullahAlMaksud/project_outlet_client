@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import ProductCard from '../../components/ProductCard';
 import { useQuery } from '@tanstack/react-query';
 import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/react/24/solid';
@@ -8,8 +8,8 @@ import { RiArrowUpDownFill } from 'react-icons/ri';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 
-const fetchProducts = async () => {
-    const res = await fetch('http://localhost:3000/products');
+const fetchProducts = async (page = 1, limit = 12) => {
+    const res = await fetch(`http://localhost:3000/products?page=${page}&limit=${limit}`);
     if (!res.ok) {
         throw new Error('Network response was not ok');
     }
@@ -17,28 +17,34 @@ const fetchProducts = async () => {
 };
 
 const ProductSection = () => {
-    const { data, error, isLoading } = useQuery({
-        queryKey: ['products'],
-        queryFn: fetchProducts
-    });
-
-    const [open, setOpen] = React.useState(false);
-
+    const [open, setOpen] = useState(false);
+    const [active, setActive] = useState(1);
     const toggleOpen = () => setOpen((cur) => !cur);
 
 
-    const [active, setActive] = useState(1);
+
+    const { data, error, isLoading } = useQuery({
+        queryKey: ['products', active],
+        queryFn: () => fetchProducts(active, 12),
+        keepPreviousData: true,
+    });
+
+    // useEffect(() => {
+    //     console.log(`Fetching products for page ${active}`);
+    //     console.log(data?.products); // Check if data changes on page change
+    // }, [active, data]);
+
 
     const next = () => {
-        if (active === 10) return;
-
-        setActive(active + 1);
+        if (active < data?.totalPages) {
+            setActive((prev) => prev + 1);
+        }
     };
 
     const prev = () => {
-        if (active === 1) return;
-
-        setActive(active - 1);
+        if (active > 1) {
+            setActive((prev) => Math.max(prev - 1, 1));
+        }
     };
 
     if (isLoading) return <div>Loading...</div>;
@@ -49,14 +55,14 @@ const ProductSection = () => {
             <h2 className='text-3xl font-bold text-center my-5'>Our Products</h2>
 
             {/* Search */}
-            <div className="relative flex w-full gap-2 md:w-max">
+            <div className="relative flex min-w-full gap-2 md:w-max">
                 <Input
                     type="search"
-                    color="white"
+                    color="black"
                     label="Type here..."
                     className="pr-20"
                     containerProps={{
-                        className: "min-w-[288px]",
+                        className: "min-w-[300px]",
                     }}
                 />
                 <Button
@@ -112,7 +118,7 @@ const ProductSection = () => {
 
             {/* Product Display */}
             <div className='grid gap-2 md:grid-cols-2 lg:grid-cols-3'>
-                {data.map(product => (
+                {data?.products.map((product) => (
                     <ProductCard key={product._id} product={product} />
                 ))}
             </div>
@@ -130,13 +136,13 @@ const ProductSection = () => {
                 </IconButton>
                 <Typography color="gray" className="font-normal">
                     Page <strong className="text-gray-900">{active}</strong> of{" "}
-                    <strong className="text-gray-900">10</strong>
+                    <strong className="text-gray-900">{data.totalPages}</strong>
                 </Typography>
                 <IconButton
                     size="sm"
                     variant="outlined"
                     onClick={next}
-                    disabled={active === 10}
+                    disabled={active === data?.totalPages}
                 >
                     <ArrowRightIcon strokeWidth={2} className="h-4 w-4" />
                 </IconButton>
