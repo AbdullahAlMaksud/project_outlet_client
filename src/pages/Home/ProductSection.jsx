@@ -4,12 +4,12 @@ import { useQuery } from '@tanstack/react-query';
 import { ArrowRightIcon, ArrowLeftIcon } from '@heroicons/react/24/solid';
 import { IconButton, Button, Typography, Input, Collapse, Card, CardBody, Checkbox } from '@material-tailwind/react';
 import { RiArrowUpDownFill } from 'react-icons/ri';
-// import { Input } from 'postcss';
 import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 
-const fetchProducts = async (page = 1, limit = 12) => {
-    const res = await fetch(`http://localhost:3000/products?page=${page}&limit=${limit}`);
+
+const fetchProducts = async ({ page = 1, limit = 12, search = '' }) => {
+    const res = await fetch(`http://localhost:3000/products?page=${page}&limit=${limit}&search=${search}`);
     if (!res.ok) {
         throw new Error('Network response was not ok');
     }
@@ -19,36 +19,52 @@ const fetchProducts = async (page = 1, limit = 12) => {
 const ProductSection = () => {
     const [open, setOpen] = useState(false);
     const [active, setActive] = useState(1);
+    const [search, setSearch] = useState('');
+    const [inputValue, setInputValue] = useState('');
+
+
     const toggleOpen = () => setOpen((cur) => !cur);
 
-
-
+    //----Get Data with tacstack query
     const { data, error, isLoading } = useQuery({
-        queryKey: ['products', active],
-        queryFn: () => fetchProducts(active, 12),
+        queryKey: ['products', active, search],
+        queryFn: () => fetchProducts({ page: active, limit: 12, search }),
         keepPreviousData: true,
     });
 
-    // useEffect(() => {
-    //     console.log(`Fetching products for page ${active}`);
-    //     console.log(data?.products); // Check if data changes on page change
-    // }, [active, data]);
+    //----Search funtionality
+    const handleSearchChange = (e) => {
+        setInputValue(e.target.value);
+    };
+    const handleSearchClick = (e) => {
+        e.preventDefault();
+        setSearch(inputValue);
+        setActive(1);
+    };
+    const handleKeyUp = (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            setSearch(inputValue);
+            setActive(1);
+        }
+    };
 
-
+    //----Pagination Functionality
     const next = () => {
         if (active < data?.totalPages) {
             setActive((prev) => prev + 1);
         }
     };
-
     const prev = () => {
         if (active > 1) {
             setActive((prev) => Math.max(prev - 1, 1));
         }
     };
 
+    //---Data State management
     if (isLoading) return <div>Loading...</div>;
     if (error) return <div>Error: {error.message}</div>;
+
 
     return (
         <div className='w-11/12 mx-auto'>
@@ -64,15 +80,20 @@ const ProductSection = () => {
                     containerProps={{
                         className: "min-w-[300px]",
                     }}
+                    value={inputValue}
+                    onChange={handleSearchChange}
+                    onKeyUp={handleKeyUp}
                 />
                 <Button
                     size="sm"
                     color="white"
                     className="!absolute right-1 top-1 rounded"
+                    onClick={handleSearchClick}
                 >
                     Search
                 </Button>
             </div>
+
 
             {/* Filtering */}
             <div className='mt-3'>
@@ -113,16 +134,12 @@ const ProductSection = () => {
                 <Button className='flex items-center gap-1 font-normal bg-outlet-secondary'>Date new to old <RiArrowUpDownFill /></Button>
             </div>
 
-
-
-
             {/* Product Display */}
             <div className='grid gap-2 md:grid-cols-2 lg:grid-cols-3'>
                 {data?.products.map((product) => (
                     <ProductCard key={product._id} product={product} />
                 ))}
             </div>
-
 
             {/* Paggination */}
             <div className="flex items-center justify-center my-5 gap-8">
