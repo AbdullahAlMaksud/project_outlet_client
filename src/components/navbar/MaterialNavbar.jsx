@@ -27,7 +27,7 @@ const MaterialNavbar = () => {
     return (
         <Navbar shadow={true} fullWidth className="border-0 bg-white/90 fixed z-40 backdrop-blur-sm">
 
-            <div className="container mx-auto flex items-center justify-between">
+            <div className="lg:w-11/12 mx-auto flex items-center justify-between">
             <Link to={'/'} variant="filled" className="px-3 shadow-none hover:shadow-none py-1 bg-transparent">
                     <div className='z-10 relative'>
                         <h2 className='font-robotoCondensed text-2xl font-bold text-outlet-secondary flex gap-1'><span className='text-white'>O</span><span>utlet</span></h2>
@@ -36,9 +36,9 @@ const MaterialNavbar = () => {
                 </Link>
                 
                 <ul className="ml-10 hidden items-center gap-6 lg:flex">
-                    <NavItem icon={AiFillProduct} label="All Products" />
+                    <NavItem link={() => document.getElementById('productSection').scrollIntoView({ behavior: 'smooth' })} icon={AiFillProduct} label="All Products" />
+                    <NavItem link={() => document.getElementById('review').scrollIntoView({ behavior: 'smooth' })} icon={MdReviews} label="Review" />
                     <NavItem icon={UserCircleIcon} label="Account" />
-                    <NavItem icon={MdReviews} label="Review" />
                 </ul>
                 <div className="hidden items-center gap-5 lg:flex">
                     <Button variant="text" className=" rounded-full px-0 py-0"><BiCart className="text-3xl"/></Button>
@@ -60,9 +60,9 @@ const MaterialNavbar = () => {
             <Collapse open={open}>
                 <div className="container mx-auto mt-3 border-t border-blue-gray-50 px-2 pt-4">
                     <ul className="flex flex-col gap-4">
-                        <NavItem icon={AiFillProduct} label="Pages" />
-                        <NavItem icon={UserCircleIcon} label="Account" />
-                        <NavItem icon={MdReviews} label="Review" />
+                        <NavItem link={() => document.getElementById('productSection').scrollIntoView({ behavior: 'smooth' })} icon={AiFillProduct} label="All Products" />
+                        <NavItem link={() => document.getElementById('review').scrollIntoView({ behavior: 'smooth' })} icon={MdReviews} label="Review" />
+                        <NavItem  icon={UserCircleIcon} label="Account" />
                     </ul>
                     <div className="mt-6 mb-4 flex items-center gap-4">
                     <Button variant="text" className=" rounded-full px-0 py-0"><BiCart className="text-3xl"/></Button>

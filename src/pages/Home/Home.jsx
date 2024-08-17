@@ -2,6 +2,7 @@ import React from 'react';
 import HeroSection from './HeroSection';
 import ProductSection from './ProductSection';
 import ReviewSection from './ReviewSection';
+import CustomerReviews from './ReviewSection';
 
 const Home = () => {
     return (
@@ -12,7 +13,7 @@ const Home = () => {
             <section className='mt-20'>
             <ProductSection/>
             </section>
-            <ReviewSection/>
+            <CustomerReviews/>
         </div>
     );
 };

@@ -76,7 +76,7 @@ const ProductSection = () => {
 
 
     return (
-        <div className='w-11/12 mx-auto'>
+        <div id='productSection' className='w-11/12 mx-auto'>
             <h2 className='text-3xl font-bold text-center mb-7 text-outlet-secondary font-poppins'>Our Products</h2>
             <section className='shadow-md rounded-xl px-2 border py-4 my-10'>
 
