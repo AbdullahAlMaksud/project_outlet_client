@@ -1,15 +1,12 @@
 import React from 'react';
 import { Outlet } from 'react-router-dom';
-import Navbar from '../components/navbar/Navbar';
 import Footer from '../components/footer/Footer';
-import App from '../App';
 import MaterialNavbar from '../components/navbar/MaterialNavbar';
 
 const MainLayouts = () => {
     return (
         <>
-            <nav>
-                {/* <Navbar /> */}
+            <nav className='fixed w-full z-50'>
                 <MaterialNavbar />
             </nav>
 
@@ -18,7 +15,7 @@ const MainLayouts = () => {
             </section>
 
             <footer>
-                <Footer/>
+                <Footer />
             </footer>
         </>
     );

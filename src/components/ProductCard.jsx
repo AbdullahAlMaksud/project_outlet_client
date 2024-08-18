@@ -1,7 +1,6 @@
 import React from 'react';
 
 const ProductCard = ({ product }) => {
-    // console.log(product)
     return (
         <div>
             <div className="flex max-w-md overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">

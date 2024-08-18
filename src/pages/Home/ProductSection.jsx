@@ -8,7 +8,7 @@ import RangeSlider from 'react-range-slider-input';
 import 'react-range-slider-input/dist/style.css';
 
 const fetchProducts = async ({ page = 1, limit = 12, search = '', sortBy = '', filters = {} }) => {
-    const res = await fetch(`http://localhost:3000/products?page=${page}&limit=${limit}&search=${search}&sortBy=${sortBy}&category=${filters.category || ''}&brand=${filters.brand || ''}&minPrice=${filters.minPrice || 0}&maxPrice=${filters.maxPrice || 10000}`);
+    const res = await fetch(`${import.meta.env.VITE_SERVER}/products?page=${page}&limit=${limit}&search=${search}&sortBy=${sortBy}&category=${filters.category || ''}&brand=${filters.brand || ''}&minPrice=${filters.minPrice || 0}&maxPrice=${filters.maxPrice || 10000}`);
     if (!res.ok) {
         throw new Error('Network response was not ok');
     }
@@ -16,7 +16,7 @@ const fetchProducts = async ({ page = 1, limit = 12, search = '', sortBy = '', f
 };
 
 const fetchCategories = async () => {
-    const res = await fetch('http://localhost:3000/categories');
+    const res = await fetch(`${import.meta.env.VITE_SERVER}/categories`);
     if (!res.ok) {
         throw new Error('Network response was not ok');
     }
@@ -24,7 +24,7 @@ const fetchCategories = async () => {
 };
 
 const fetchBrands = async () => {
-    const res = await fetch('http://localhost:3000/brands');
+    const res = await fetch(`${import.meta.env.VITE_SERVER}/brands`);
     if (!res.ok) {
         throw new Error('Network response was not ok');
     }
@@ -41,6 +41,7 @@ const ProductSection = () => {
     const [selectedCategories, setSelectedCategories] = useState([]);
     const [selectedBrands, setSelectedBrands] = useState([]);
 
+    console.log(`${import.meta.env.VITE_SERVER}`)
     const toggleOpen = () => setOpen((cur) => !cur);
 
     const { data: productData, error: productError, isLoading: productLoading } = useQuery({

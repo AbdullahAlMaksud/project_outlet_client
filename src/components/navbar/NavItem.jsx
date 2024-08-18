@@ -7,7 +7,6 @@ function NavItem({ icon: Icon, label, link }) {
             <Typography
                 as="button"
                 onClick={link}
-                // href={link}
                 variant="paragraph"
                 color="blue-gray"
                 className="text-blue-gray-700 flex items-center gap-2 font-medium"

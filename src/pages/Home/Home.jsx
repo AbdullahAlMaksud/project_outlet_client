@@ -8,12 +8,14 @@ const Home = () => {
     return (
         <div>
             <section>
-            <HeroSection/>
+                <HeroSection />
             </section>
             <section className='mt-20'>
-            <ProductSection/>
+                <ProductSection />
             </section>
-            <CustomerReviews/>
+            <section>
+                <CustomerReviews />
+            </section>
         </div>
     );
 };

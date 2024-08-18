@@ -1,7 +1,7 @@
 import React from 'react';
 import { FaQuoteLeft, FaStar } from 'react-icons/fa';
 
-const ReviewCard = ({review}) => {
+const ReviewCard = ({ review }) => {
     return (
         <div className="bg-white shadow-lg rounded-lg p-6 m-4 max-w-sm z-0 relative">
             <div className="flex items-center mb-4">
