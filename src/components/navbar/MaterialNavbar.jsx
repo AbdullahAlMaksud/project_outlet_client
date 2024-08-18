@@ -47,19 +47,19 @@ const MaterialNavbar = () => {
             <div className="lg:w-11/12 mx-auto flex items-center justify-between">
                 <Link to={'/'} variant="filled" className="px-3 shadow-none hover:shadow-none py-1 bg-transparent">
                     <div className='z-10 relative'>
-                        <h2 className='font-robotoCondensed text-2xl md:text-5xl font-bold text-outlet-secondary flex gap-1'>
+                        <h2 className='font-robotoCondensed text-2xl md:text-4xl font-bold text-outlet-secondary flex gap-1'>
                             <span className='text-white'>O</span><span>utlet</span>
                         </h2>
-                        <img src="favicon.svg" className='w-7 md:w-12 absolute -top-0.5 md:-top-1 md:-left-2.5 -left-1.5 -z-10' alt="" />
+                        <img src="favicon.svg" className='w-7 md:w-9 absolute -top-0.5 md:-top-.5 md:-left-2 -left-1.5 -z-10' alt="" />
                     </div>
                 </Link>
                 <ul className="ml-10 hidden items-center gap-6 lg:flex">
                     <NavItem link={() => document.getElementById('productSection').scrollIntoView({ behavior: 'smooth' })} icon={AiFillProduct} label="All Products" />
                     <NavItem link={() => document.getElementById('review').scrollIntoView({ behavior: 'smooth' })} icon={MdReviews} label="Review" />
                 </ul>
-                <div className="hidden items-center gap-5 lg:flex">
-                    <Button variant="text" className="rounded-full px-3 border shadow-md py-3">
-                        <BiCart className="text-3xl" />
+                <div className="hidden items-center gap-2 lg:flex">
+                    <Button variant="text" className="rounded-full w-10 h-10 shadow-md flex items-center justify-center bg-outlet-primary/10 border border-outlet-accent p-1">
+                        <span><BiCart className="text-xl text-outlet-primary " /></span>
                     </Button>
                     {user ? (
                         <>
@@ -69,10 +69,10 @@ const MaterialNavbar = () => {
                                 title={user?.displayName || 'Profile'}
                             >
                                 {user.photoURL ? (
-                                    <Link to={'/user'}><img
+                                    <Link to={'/user'} className="flex items-center justify-center w-10 h-10 rounded-full"><img
                                         src={user?.photoURL}
                                         alt="User"
-                                        className="w-12 h-12 shadow-md rounded-full object-cover"
+                                        className="p-1 h-10 shadow-md rounded-full object-cover bg-outlet-primary/10 border border-outlet-accent"
                                     /></Link>
                                 ) : (
                                     <UserCircleIcon className="text-3xl text-gray-700" />
@@ -105,11 +105,14 @@ const MaterialNavbar = () => {
                         <NavItem link={() => document.getElementById('productSection').scrollIntoView({ behavior: 'smooth' })} icon={AiFillProduct} label="All Products" />
                         <NavItem link={() => document.getElementById('review').scrollIntoView({ behavior: 'smooth' })} icon={MdReviews} label="Review" />
                     </ul>
-                    <div className="mt-6 mb-4 flex items-center gap-4">
-                        <Button variant="text" className="rounded-full px-2 border shadow-md py-2">
-                            <BiCart className="text-3xl" />
+                    <div className="mt-6 mb-4 flex items-center gap-2">
+                        <div className="rounded-md border border-orange-400 p-1 border-l-0 rounded-l-none">
+                        <Button variant="text" className="rounded-full w-10 h-10 shadow-md flex items-center justify-center bg-outlet-primary/10 border border-outlet-accent p-1">
+                            <span><BiCart className="text-xl text-outlet-primary " /></span>
                         </Button>
-                        {user ? (
+                        </div>
+                       <div className="rounded-md border border-orange-400 pr-1 border-r-0 rounded-r-none">
+                       {user ? (
                             <>
                                 <Button
                                     variant="text"
@@ -117,10 +120,10 @@ const MaterialNavbar = () => {
                                     title={user.displayName || 'Profile'}
                                 >
                                     {user?.photoURL ? (
-                                        <Link to={'/user'}><img
+                                        <Link to={'/user'} className="flex items-center justify-center w-10 h-10 rounded-full"><img
                                             src={user?.photoURL}
                                             alt="User"
-                                            className="w-10 h-10 rounded-full object-cover"
+                                            className="p-1 h-10 shadow-md rounded-full object-cover bg-outlet-primary/10 border border-outlet-accent"
                                         /></Link>
                                     ) : (
                                         <UserCircleIcon className="text-3xl text-gray-700" />
@@ -133,6 +136,7 @@ const MaterialNavbar = () => {
                                 <Link to='/login'>Log in</Link>
                             </Button>
                         )}
+                       </div>
                     </div>
                 </div>
             </Collapse>

@@ -1,3 +1,4 @@
+import { Button, Card } from '@material-tailwind/react';
 import React from 'react';
 import { FaStar, FaStarHalfAlt, FaRegStar } from 'react-icons/fa';
 
@@ -11,18 +12,18 @@ const ProductCard = ({ product }) => {
 
         for (let i = 0; i < fullStars; i++) {
             stars.push(
-                <FaStar key={i} className="text-yellow-500" />
+                <FaStar key={i} className="text-orange-500 text-xs" />
             );
         }
 
         if (halfStar) {
             stars.push(
-                <FaStarHalfAlt key={fullStars} className="text-yellow-500" />
+                <FaStarHalfAlt key={fullStars} className="text-orange-500 text-xs" />
             );
         }
         for (let i = totalStars; i < 5; i++) {
             stars.push(
-                <FaRegStar key={i} className="text-yellow-500" />
+                <FaRegStar key={i} className="text-gray-500 text-xs" />
             );
         }
 
@@ -30,30 +31,35 @@ const ProductCard = ({ product }) => {
     };
 
     return (
-        <div>
-            <div className="flex max-w-md overflow-hidden bg-white rounded-lg shadow-lg dark:bg-gray-800">
-                <div className="w-1/3 bg-cover">
-                    <img src={product.image} className='h-full object-cover' alt="" />
+        <Card className='rounded-md border hover:scale-105 duration-500 ease-out'>
+            <div className='flex items-center justify-center w-full bg-gray-50 rounded-md'>
+                <img src={product.image} className='h-32' alt="" />
+            </div>
+            <div className='px-2'>
+                <div className='flex items-center  flex-col justify-center h-28 md:h-20 mt-4'>
+                    <p className='text-[.5rem] md:text-xs text-center border border-red-500 text-red-600 px-2 rounded-md'>{product.brand}</p>
+                    <h2 className='font-semibold font-poppins text-center'>{product.name}</h2>
+                <div>
+                    <p className='text-xs text-center'>{product.description}</p>
                 </div>
+                </div>
+            </div>
 
-                <div className="w-2/3 p-4 md:p-4">
-                    <h1 className="text-xl font-bold text-gray-800 dark:text-white">{product.name}</h1>
-
-                    <p className="mt-2 text-sm text-gray-600 dark:text-gray-400">{product.description}</p>
-
-                    <div className="flex mt-2 items-center">
+            <div className='px-3 my-2 flex items-stretch justify-between'>
+                <div className='flex flex-col justify-between'>
+                    <div>
+                        <p className=' w-fit text-[.5rem] md:text-xs text-center border bg-outlet-primary/40 text-outlet-secondary px-2 rounded-md'>{product.category}</p>
+                    </div>
+                    <div className="flex items-center">
                         <div className="flex space-x-1" title={`Rating: ${product.rating}`}>
                             {renderStars(product.rating)}
                         </div>
                     </div>
-
-                    <div className="flex justify-between mt-3 items-center">
-                        <h1 className="text-lg font-bold text-gray-700 dark:text-gray-200 md:text-xl">৳ {product.price}</h1>
-                        <button className="px-2 py-1 text-xs font-bold text-white uppercase transition-colors duration-300 transform bg-gray-800 rounded dark:bg-gray-700 hover:bg-gray-700 dark:hover:bg-gray-600 focus:outline-none focus:bg-gray-700 dark:focus:bg-gray-600">Add to Cart</button>
-                    </div>
                 </div>
+                <div className='font-inter font-bold text-lg md:text-xl text-green-800'>৳ {product.price}</div>
             </div>
-        </div>
+            <Button variant='gradient' color='deep-orange' className='font-normal font-poppins py-2 rounded-md'>Add to cart</Button>
+        </Card>
     );
 };
 

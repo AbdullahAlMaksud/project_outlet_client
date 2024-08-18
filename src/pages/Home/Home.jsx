@@ -10,7 +10,7 @@ const Home = () => {
             <section>
                 <HeroSection />
             </section>
-            <section className='mt-20'>
+            <section>
                 <ProductSection />
             </section>
             <section>

@@ -26,7 +26,7 @@ const UserProfile = () => {
             </h2>
             <div className="flex items-center flex-col gap-4 mb-4">
                 <img
-                    src={user?.photoURL || 'https://i.postimg.cc/SsS9wZWD/pngwing-com-1.png'}
+                    src={user?.photoURL || 'https://i.postimg.cc/63cVH8m2/84c20033850498-56ba69ac290ea.png'}
                     alt="Profile"
                     className="w-16 h-16 rounded-full object-cover"
                 />

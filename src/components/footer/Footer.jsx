@@ -5,7 +5,7 @@ const Footer = () => {
     return (
         <>
             <footer className="bg-outlet-accent/10 dark:bg-gray-900">
-                <div className="container flex flex-col items-center justify-between px-6 py-8 mx-auto lg:flex-row">
+                <div className="w-11/12 flex flex-col items-center justify-between px-6 py-8 mx-auto lg:flex-row">
                     <div className='z-10 relative'>
                         <h2 className='font-robotoCondensed text-2xl font-bold text-outlet-secondary flex gap-1'><span className='text-white'>O</span><span>utlet</span></h2>
                         <img src="favicon.svg" className='w-7 absolute -top-0.5 -left-1.5 -z-10' alt="" />

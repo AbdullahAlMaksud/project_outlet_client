@@ -5,7 +5,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 import { AuthContext } from '../../provider/AuthProvider';
 
-const DEFAULT_PHOTO_URL = 'https://i.postimg.cc/SsS9wZWD/pngwing-com-1.png';
+const DEFAULT_PHOTO_URL = 'https://i.postimg.cc/63cVH8m2/84c20033850498-56ba69ac290ea.png';
 
 const Registration = () => {
     const [name, setName] = useState('');
